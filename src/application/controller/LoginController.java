@@ -1,8 +1,14 @@
 package application.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import application.Main;
+import application.database.DBConnector;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,8 +19,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
 public class LoginController {
-
-	
 	
     @FXML
     private PasswordField pf_pass;
@@ -31,12 +35,21 @@ public class LoginController {
     @FXML
     void loginClicked(MouseEvent event) throws IOException {
 
-    	FXMLLoader loader = new FXMLLoader();
     	String username = tf_username.getText();
-    	System.out.println(username);
-    	Parent parent = FXMLLoader.load(getClass().getResource("/application/view/UserView.fxml"));
+    	
+    	
+    	FXMLLoader loader = new FXMLLoader();
+    	loader.setLocation(getClass().getResource("/application/view/UserView.fxml"));
+
+    	try {
+    		loader.load();
+    	} catch(IOException e){
+    		e.printStackTrace();
+    	}
+    	
     	TableController tc = loader.getController();
-    	tc.setArtist(username);
+    	tc.setUserLabel(username);
+    	Parent parent = loader.getRoot();
     	Scene scene = new Scene(parent);
     	Main.getPrimaryStage().setScene(scene);
 //    	Main.getPrimaryStage().showAndWait();
@@ -46,5 +59,21 @@ public class LoginController {
     @FXML
     void registerUser(MouseEvent event) {
 
+    	DBConnector dbconnector = new DBConnector();
+		Connection connection = null;
+
+		try {
+			connection = dbconnector.connection();
+			String sql = "SELECT * FROM concerts WHERE username = ? and password = ?"; 
+			PreparedStatement stmt = dbconnector.connection().prepareStatement(sql);
+			stmt.setString(1, tf_username.getText());
+			stmt.setString(2, pf_pass.getText());
+			ResultSet rs = stmt.executeQuery();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+		}
     }
 }

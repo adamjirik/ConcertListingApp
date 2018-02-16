@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -81,6 +82,11 @@
                <children>
                   <Button fx:id="btn_clear" layoutX="623.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#filterClear" text="Clear" />
                   <Button fx:id="btn_filter" layoutX="687.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#filterResults" text="Filter" />
+                  <Label layoutX="456.0" layoutY="10.0" text="Max:" />
+                  <Label layoutX="398.0" layoutY="10.0" text="Min:" />
+                  <Label fx:id="lbl_minVal" layoutX="422.0" layoutY="10.0" text="Label" />
+                  <Label fx:id="lbl_maxVal" layoutX="481.0" layoutY="10.0" text="Label" />
+                  <Label fx:id="lbl_user" layoutX="14.0" layoutY="7.0" text="User" />
                </children>
             </AnchorPane>
          </children>

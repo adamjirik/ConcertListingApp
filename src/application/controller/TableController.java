@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
@@ -36,8 +37,8 @@ import javafx.scene.input.MouseEvent;
 			this.username = un;
 		}
 
-		public void setArtist(String x) {
-			tf_artistFilter.setText(x);
+		public void setUserLabel(String user) {
+			lbl_user.setText(user);
 		}
 		
 		private DBConnector dbconnector;
@@ -114,6 +115,15 @@ import javafx.scene.input.MouseEvent;
 	    @FXML
 	    private DatePicker dp_endDate;
 
+	    @FXML
+	    private Label lbl_minVal;
+
+	    @FXML
+	    private Label lbl_maxVal;
+
+	    @FXML
+	    private Label lbl_user;
+	    
 	    @FXML
 	    private ComboBox<String> cb_genreFilter;
 	    
