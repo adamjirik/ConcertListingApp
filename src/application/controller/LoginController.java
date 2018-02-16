@@ -17,46 +17,70 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
 public class LoginController {
-	
-    @FXML
-    private PasswordField pf_pass;
 
-    @FXML
-    private TextField tf_username;
+	@FXML
+	private PasswordField pf_pass;
 
-    @FXML
-    private Button btn_login;
-    
-    @FXML
-    private Button btn_register;
+	@FXML
+	private TextField tf_username;
 
-    @FXML
-    void loginClicked(MouseEvent event) throws IOException {
+	@FXML
+	private Button btn_login;
 
-    	String username = tf_username.getText();
-    	
-    	
-    	FXMLLoader loader = new FXMLLoader();
-    	loader.setLocation(getClass().getResource("/application/view/UserView.fxml"));
+	@FXML
+	private Button btn_register;
 
-    	try {
-    		loader.load();
-    	} catch(IOException e){
-    		e.printStackTrace();
-    	}
-    	
-    	TableController tc = loader.getController();
-    	tc.setUserLabel(username);
-    	Parent parent = loader.getRoot();
-    	Scene scene = new Scene(parent);
-    	Main.getPrimaryStage().setScene(scene);
-    	
-    }
+	@FXML
+	void loginClicked(MouseEvent event) throws IOException, SQLException {
 
-    @FXML
-    void registerUser(MouseEvent event) throws SQLException {
 
-    	DBConnector dbconnector = new DBConnector();
+		DBConnector dbconnector = new DBConnector();
+		Connection connection = null;
+
+		try {
+			connection = dbconnector.connection();
+			String sql = "SELECT * FROM users WHERE username = ? and password = ?"; 
+			PreparedStatement stmt = dbconnector.connection().prepareStatement(sql);
+			stmt.setString(1, tf_username.getText());
+			stmt.setString(2, pf_pass.getText());
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+
+
+				FXMLLoader loader = new FXMLLoader();
+				loader.setLocation(getClass().getResource("/application/view/UserView.fxml"));
+
+				try {
+					loader.load();
+				} catch(IOException e){
+					e.printStackTrace();
+				} 
+
+				TableController tc = loader.getController();
+				tc.setUserLabel(tf_username.getText());
+				Parent parent = loader.getRoot();
+				Scene scene = new Scene(parent);
+				Main.getPrimaryStage().setScene(scene);
+
+			} else {
+				System.out.println("user not found");
+			}
+
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(connection != null) {
+				connection.close();
+			}
+		}
+
+	}
+
+	@FXML
+	void registerUser(MouseEvent event) throws SQLException {
+
+		DBConnector dbconnector = new DBConnector();
 		Connection connection = null;
 
 		try {
@@ -75,7 +99,7 @@ public class LoginController {
 			} else {
 				System.out.println("user exists!");
 			}
-			
+
 		}catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -83,5 +107,5 @@ public class LoginController {
 				connection.close();
 			}
 		}
-    }
+	}
 }
