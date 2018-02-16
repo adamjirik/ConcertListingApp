@@ -29,7 +29,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
 	public class TableController {
+		
+		private String username;
+		
+		public void setUserName(String un) {
+			this.username = un;
+		}
 
+		public void setArtist(String x) {
+			tf_artistFilter.setText(x);
+		}
+		
 		private DBConnector dbconnector;
 		
 		private ObservableList<Concert> data = FXCollections.observableArrayList();
@@ -419,7 +429,7 @@ import javafx.scene.input.MouseEvent;
 
 	    @FXML
 	    void viewSaved(ActionEvent event) {
-
+	    	System.out.println(this.username);
 	    }
 
 	}
