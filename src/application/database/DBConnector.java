@@ -11,7 +11,7 @@ public class DBConnector {
 	
 	public Connection connection() throws SQLException {
 		
-		return DriverManager.getConnection("jdbc:mysql://localhost:3306/testfx?useSSL=False", user, pass);
+		return DriverManager.getConnection("jdbc:mysql://localhost:3306/concerts?useSSL=False", user, pass);
 	}
 	
 	

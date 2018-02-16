@@ -23,8 +23,9 @@ private static Stage primaryStage;
 
 		try {
 			
+		
 			setPrimaryStage(primaryStage);
-			Parent parent = FXMLLoader.load(getClass().getResource("/application/view/UserView.fxml"));
+			Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/application/view/LoginView.fxml"));
 			Scene scene = new Scene(parent);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Application");
