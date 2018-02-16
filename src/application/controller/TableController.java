@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 import application.database.DBConnector;
 import application.model.Concert;
 import javafx.collections.FXCollections;
@@ -191,6 +190,8 @@ public class TableController {
 
 	@FXML
 	void filterClear(MouseEvent event) throws SQLException {
+		lbl_maxVal.setText("");
+		lbl_minVal.setText("");
 		tf_artistFilter.clear();
 		tf_cityFilter.clear();
 		tf_venueFilter.clear();
@@ -436,6 +437,16 @@ public class TableController {
 	void viewSaved(ActionEvent event) {
 		System.out.println(lbl_user.getText());
 	}
+	
+    @FXML
+    void setMaxText(MouseEvent event) {
+    	lbl_maxVal.setText("" + s_maxCost.getValue());
+    }
+
+    @FXML
+    void setMinText(MouseEvent event) {
+    	lbl_minVal.setText("" + s_minCost.getValue());
+    }
 
 }
 
