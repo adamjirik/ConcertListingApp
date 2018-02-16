@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import application.Main;
 import application.database.DBConnector;
 import javafx.fxml.FXML;
@@ -52,28 +50,38 @@ public class LoginController {
     	Parent parent = loader.getRoot();
     	Scene scene = new Scene(parent);
     	Main.getPrimaryStage().setScene(scene);
-//    	Main.getPrimaryStage().showAndWait();
     	
     }
 
     @FXML
-    void registerUser(MouseEvent event) {
+    void registerUser(MouseEvent event) throws SQLException {
 
     	DBConnector dbconnector = new DBConnector();
 		Connection connection = null;
 
 		try {
 			connection = dbconnector.connection();
-			String sql = "SELECT * FROM concerts WHERE username = ? and password = ?"; 
+			String sql = "SELECT * FROM users WHERE username = ?"; 
 			PreparedStatement stmt = dbconnector.connection().prepareStatement(sql);
 			stmt.setString(1, tf_username.getText());
-			stmt.setString(2, pf_pass.getText());
 			ResultSet rs = stmt.executeQuery();
+			if(!rs.next()) {
+				System.out.println("no user");
+				String insert = "INSERT INTO users (username, password, role) VALUES (?, ?, \"user\")";
+				stmt = dbconnector.connection().prepareStatement(insert);
+				stmt.setString(1, tf_username.getText());
+				stmt.setString(2, pf_pass.getText());
+				stmt.executeUpdate();
+			} else {
+				System.out.println("user exists!");
+			}
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
-			
+			if(connection != null) {
+				connection.close();
+			}
 		}
     }
 }

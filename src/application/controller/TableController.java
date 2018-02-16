@@ -31,11 +31,6 @@ import javafx.scene.input.MouseEvent;
 
 	public class TableController {
 		
-		private String username;
-		
-		public void setUserName(String un) {
-			this.username = un;
-		}
 
 		public void setUserLabel(String user) {
 			lbl_user.setText(user);
@@ -439,7 +434,7 @@ import javafx.scene.input.MouseEvent;
 
 	    @FXML
 	    void viewSaved(ActionEvent event) {
-	    	System.out.println(this.username);
+	    	System.out.println(lbl_user.getText());
 	    }
 
 	}
