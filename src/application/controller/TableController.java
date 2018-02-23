@@ -1,6 +1,7 @@
 package application.controller;
 
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,13 +9,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+import application.Main;
 import application.database.DBConnector;
 import application.model.Concert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -26,8 +31,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class TableController {
 
@@ -191,6 +198,8 @@ public class TableController {
 
 	@FXML
 	void filterClear(MouseEvent event) throws SQLException {
+		lbl_maxVal.setText("");
+		lbl_minVal.setText("");
 		tf_artistFilter.clear();
 		tf_cityFilter.clear();
 		tf_venueFilter.clear();
@@ -418,24 +427,103 @@ public class TableController {
 
 
 	@FXML
-	void logout(ActionEvent event) {
-
+	void logout(ActionEvent event) throws IOException {
+		Stage primaryStage = Main.getPrimaryStage();
+		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/application/view/LoginView.fxml"));
+		Scene scene = new Scene(parent);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("Application");
+		primaryStage.show();
 	}
 
 	@FXML
-	void menuSave(ActionEvent event) {
+	void menuSave(ActionEvent event) throws SQLException {
+		Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("Instructions");
+    	alert.setHeaderText(null);
+    	
+		Connection connection = null;
+		try {
+			connection = dbconnector.connection();
+			
+			TableViewSelectionModel<Concert> selectionModel = table_concerts.getSelectionModel();
+			Concert selectedItem = selectionModel.getSelectedItem();
+			int idToSave = selectedItem.getId();
+			
+			int userId = 0;
+			
+			PreparedStatement userSelect = connection.prepareStatement("SELECT iduser FROM users WHERE username = ?");
+			userSelect.setString(1, lbl_user.getText());
+			ResultSet set = userSelect.executeQuery();
+			while(set.next()) {
+				userId = set.getInt(1);
+			}
+			
+			PreparedStatement insert = connection.prepareStatement("INSERT INTO saved_concerts (iduser, idconcert) VALUES (?, ?)");
+			insert.setInt(1, userId);
+			insert.setInt(2, idToSave);
 
-
-		TableViewSelectionModel<Concert> selectionModel = table_concerts.getSelectionModel();
-		Concert selectedItem = selectionModel.getSelectedItem();
-		int idToSave = selectedItem.getId();
-		System.out.println(idToSave);
+			insert.executeUpdate();
+			
+			alert.setContentText("Saved!");
+			alert.showAndWait();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(connection != null) {
+				connection.close();
+			}
+		}
 	}
 
 	@FXML
-	void viewSaved(ActionEvent event) {
-		System.out.println(lbl_user.getText());
+	void viewSaved(ActionEvent event) throws SQLException {
+		Connection connection = null;
+		try {
+			int userId = 0;
+			connection = dbconnector.connection();
+			PreparedStatement userSelect = connection.prepareStatement("SELECT iduser FROM users WHERE username = ?");
+			userSelect.setString(1, lbl_user.getText());
+			ResultSet userSet = userSelect.executeQuery();
+			while(userSet.next()) {
+				userId = userSet.getInt(1);
+			}
+			PreparedStatement savedSelect = connection.prepareStatement("SELECT c.id, c.artist, c.supporting, c.venue, c.city, c.cost, c.date, c.genre FROM concerts.concerts as c natural join saved_concerts as sc where c.id = sc.idconcert and sc.iduser = ?;");
+			savedSelect.setInt(1, userId);
+			ResultSet savedSet = savedSelect.executeQuery();
+			
+			setTableValues(savedSet);
+
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(connection != null) {
+				connection.close();
+			}
+		}
+		
 	}
+	
+    @FXML
+    void setMaxText(MouseEvent event) {
+    	lbl_maxVal.setText("" + s_maxCost.getValue());
+    }
+
+    @FXML
+    void setMinText(MouseEvent event) {
+    	lbl_minVal.setText("" + s_minCost.getValue());
+    }
+    
+
+    @FXML
+    void openInstructions(ActionEvent event) {
+    	Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("Instructions");
+    	alert.setHeaderText(null);
+    	alert.setContentText("Type in inputs to filter the listings. \nSelect a concert and select save from the menu to save it. \nIf you'd like to see your saved concerts, select from the menu view saved.");
+
+    	alert.showAndWait();
+    }
 
 }
 

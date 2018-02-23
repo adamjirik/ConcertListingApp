@@ -43,7 +43,7 @@
                       </Menu>
                       <Menu fx:id="menu_help" mnemonicParsing="false" text="Help">
                         <items>
-                          <MenuItem fx:id="menu_instructions" mnemonicParsing="false" text="Instructions" />
+                          <MenuItem fx:id="menu_instructions" mnemonicParsing="false" onAction="#openInstructions" text="Instructions" />
                         </items>
                       </Menu>
                     </menus>
@@ -71,8 +71,8 @@
                   <TextField fx:id="tf_artistFilter" layoutX="6.0" layoutY="14.0" prefHeight="25.0" prefWidth="148.0" promptText="artist" />
                   <TextField fx:id="tf_venueFilter" layoutX="166.0" layoutY="14.0" prefHeight="25.0" prefWidth="117.0" promptText="venue" />
                   <TextField fx:id="tf_cityFilter" layoutX="293.0" layoutY="14.0" prefHeight="25.0" prefWidth="107.0" promptText="city" />
-                  <Slider fx:id="s_minCost" layoutX="405.0" layoutY="4.0" max="200.0" prefHeight="14.0" prefWidth="107.0" />
-                  <Slider fx:id="s_maxCost" layoutX="405.0" layoutY="36.0" max="200.0" prefHeight="14.0" prefWidth="107.0" />
+                  <Slider fx:id="s_minCost" layoutX="405.0" layoutY="4.0" max="200.0" onMouseClicked="#setMinText" prefHeight="14.0" prefWidth="107.0" />
+                  <Slider fx:id="s_maxCost" layoutX="405.0" layoutY="36.0" max="200.0" onMouseClicked="#setMaxText" prefHeight="14.0" prefWidth="107.0" />
                   <DatePicker fx:id="dp_startDate" layoutX="517.0" layoutY="-1.0" prefHeight="25.0" prefWidth="117.0" promptText="From" />
                   <DatePicker fx:id="dp_endDate" layoutX="518.0" layoutY="28.0" prefHeight="25.0" prefWidth="117.0" promptText="To" />
                   <ComboBox fx:id="cb_genreFilter" layoutX="643.0" layoutY="14.0" prefHeight="25.0" prefWidth="107.0" promptText="genre" />
@@ -83,9 +83,9 @@
                   <Button fx:id="btn_clear" layoutX="623.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#filterClear" text="Clear" />
                   <Button fx:id="btn_filter" layoutX="687.0" layoutY="5.0" mnemonicParsing="false" onMouseClicked="#filterResults" text="Filter" />
                   <Label layoutX="456.0" layoutY="10.0" text="Max:" />
-                  <Label layoutX="398.0" layoutY="10.0" text="Min:" />
-                  <Label fx:id="lbl_minVal" layoutX="422.0" layoutY="10.0" text="Label" />
-                  <Label fx:id="lbl_maxVal" layoutX="481.0" layoutY="10.0" text="Label" />
+                  <Label layoutX="378.0" layoutY="10.0" text="Min:" />
+                  <Label fx:id="lbl_minVal" layoutX="404.0" layoutY="10.0" prefHeight="17.0" prefWidth="43.0" />
+                  <Label fx:id="lbl_maxVal" layoutX="481.0" layoutY="10.0" prefHeight="17.0" prefWidth="43.0" />
                   <Label fx:id="lbl_user" layoutX="14.0" layoutY="7.0" text="User" />
                </children>
             </AnchorPane>
