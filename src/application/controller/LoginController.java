@@ -11,9 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 
 public class LoginController {
@@ -79,7 +81,9 @@ public class LoginController {
 
 	@FXML
 	void registerUser(MouseEvent event) throws SQLException {
-
+		Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("Registration");
+    	alert.setHeaderText(null);
 		DBConnector dbconnector = new DBConnector();
 		Connection connection = null;
 
@@ -96,9 +100,13 @@ public class LoginController {
 				stmt.setString(1, tf_username.getText());
 				stmt.setString(2, pf_pass.getText());
 				stmt.executeUpdate();
+				
+				
+		    	alert.setContentText("User registered!");
 			} else {
-				System.out.println("user exists!");
+				alert.setContentText("user exists!");
 			}
+			alert.showAndWait();
 
 		}catch(SQLException e) {
 			e.printStackTrace();

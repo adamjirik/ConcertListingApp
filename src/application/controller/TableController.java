@@ -1,6 +1,7 @@
 package application.controller;
 
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,12 +9,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import application.Main;
 import application.database.DBConnector;
 import application.model.Concert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -25,8 +31,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class TableController {
 
@@ -419,13 +427,21 @@ public class TableController {
 
 
 	@FXML
-	void logout(ActionEvent event) {
-
+	void logout(ActionEvent event) throws IOException {
+		Stage primaryStage = Main.getPrimaryStage();
+		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/application/view/LoginView.fxml"));
+		Scene scene = new Scene(parent);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("Application");
+		primaryStage.show();
 	}
 
 	@FXML
 	void menuSave(ActionEvent event) throws SQLException {
-		
+		Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("Instructions");
+    	alert.setHeaderText(null);
+    	
 		Connection connection = null;
 		try {
 			connection = dbconnector.connection();
@@ -448,6 +464,9 @@ public class TableController {
 			insert.setInt(2, idToSave);
 
 			insert.executeUpdate();
+			
+			alert.setContentText("Saved!");
+			alert.showAndWait();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -493,6 +512,17 @@ public class TableController {
     @FXML
     void setMinText(MouseEvent event) {
     	lbl_minVal.setText("" + s_minCost.getValue());
+    }
+    
+
+    @FXML
+    void openInstructions(ActionEvent event) {
+    	Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("Instructions");
+    	alert.setHeaderText(null);
+    	alert.setContentText("Type in inputs to filter the listings. \nSelect a concert and select save from the menu to save it. \nIf you'd like to see your saved concerts, select from the menu view saved.");
+
+    	alert.showAndWait();
     }
 
 }
