@@ -469,10 +469,11 @@ public class TableController {
 			while(userSet.next()) {
 				userId = userSet.getInt(1);
 			}
-			PreparedStatement concertsSelect = connection.prepareStatement("SELECT iduser, idconcert FROM saved_concerts WHERE iduser = ?");
-			concertsSelect.setInt(1, userId);
-			ResultSet concertSet = concertsSelect.executeQuery();
-			setTableValues(concertSet);
+			PreparedStatement savedSelect = connection.prepareStatement("SELECT c.id, c.artist, c.supporting, c.venue, c.city, c.cost, c.date, c.genre FROM concerts.concerts as c natural join saved_concerts as sc where c.id = sc.idconcert and sc.iduser = ?;");
+			savedSelect.setInt(1, userId);
+			ResultSet savedSet = savedSelect.executeQuery();
+			
+			setTableValues(savedSet);
 
 		}catch (SQLException e) {
 			e.printStackTrace();
