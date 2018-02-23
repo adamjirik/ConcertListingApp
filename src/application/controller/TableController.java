@@ -424,18 +424,64 @@ public class TableController {
 	}
 
 	@FXML
-	void menuSave(ActionEvent event) {
+	void menuSave(ActionEvent event) throws SQLException {
+		
+		Connection connection = null;
+		try {
+			connection = dbconnector.connection();
+			
+			TableViewSelectionModel<Concert> selectionModel = table_concerts.getSelectionModel();
+			Concert selectedItem = selectionModel.getSelectedItem();
+			int idToSave = selectedItem.getId();
+			
+			int userId = 0;
+			
+			PreparedStatement userSelect = connection.prepareStatement("SELECT iduser FROM users WHERE username = ?");
+			userSelect.setString(1, lbl_user.getText());
+			ResultSet set = userSelect.executeQuery();
+			while(set.next()) {
+				userId = set.getInt(1);
+			}
+			
+			PreparedStatement insert = connection.prepareStatement("INSERT INTO saved_concerts (iduser, idconcert) VALUES (?, ?)");
+			insert.setInt(1, userId);
+			insert.setInt(2, idToSave);
 
-
-		TableViewSelectionModel<Concert> selectionModel = table_concerts.getSelectionModel();
-		Concert selectedItem = selectionModel.getSelectedItem();
-		int idToSave = selectedItem.getId();
-		System.out.println(idToSave);
+			insert.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(connection != null) {
+				connection.close();
+			}
+		}
 	}
 
 	@FXML
-	void viewSaved(ActionEvent event) {
-		System.out.println(lbl_user.getText());
+	void viewSaved(ActionEvent event) throws SQLException {
+		Connection connection = null;
+		try {
+			int userId = 0;
+			connection = dbconnector.connection();
+			PreparedStatement userSelect = connection.prepareStatement("SELECT iduser FROM users WHERE username = ?");
+			userSelect.setString(1, lbl_user.getText());
+			ResultSet userSet = userSelect.executeQuery();
+			while(userSet.next()) {
+				userId = userSet.getInt(1);
+			}
+			PreparedStatement concertsSelect = connection.prepareStatement("SELECT iduser, idconcert FROM saved_concerts WHERE iduser = ?");
+			concertsSelect.setInt(1, userId);
+			ResultSet concertSet = concertsSelect.executeQuery();
+			setTableValues(concertSet);
+
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(connection != null) {
+				connection.close();
+			}
+		}
+		
 	}
 	
     @FXML
